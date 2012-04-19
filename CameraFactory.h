@@ -72,11 +72,10 @@ public:
     /* Gets emulated camera information.
      * This method is called in response to camera_module_t::get_camera_info callback.
      */
-    static int getCameraInfo(int camera_id, struct camera_info *info);
-
+    int getCameraInfo(int camera_id, struct camera_info *info);
 
     /* Returns the number of available cameras */
-    static int getCameraNum();
+    int getCameraNum();
 
     /****************************************************************************
      * Camera HAL API callbacks.
@@ -95,10 +94,16 @@ private:
                            const char* name,
                            hw_device_t** device);
 
+    void parseConfig(const char* configFile);
+    void newCameraConfig(int facing, const char* location);
+
 private:
 
     /* Camera hardware */
-    CameraHardware* mCamera;
+    CameraHardware**    mCamera;
+    char**              mCameraDevices;
+    int*                mCameraOrientation;
+    int                 mCameraNum;
 
 public:
     /* Contains device open entry point, as required by HAL API. */

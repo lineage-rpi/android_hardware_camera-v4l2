@@ -28,7 +28,6 @@
 #include "CameraHardware.h"
 #include "Converter.h"
 
-#define VIDEO_DEVICE    "/dev/video0"
 #define MIN_WIDTH       320
 #define MIN_HEIGHT      240
 
@@ -132,7 +131,7 @@ bool CameraHardware::PowerOn()
     int timeOut = 500;
     do {
         // Try to open the video capture device
-        handle = ::open(VIDEO_DEVICE,O_RDWR);
+        handle = ::open(mVideoDevice,O_RDWR);
         if (handle >= 0)
             break;
         // Wait a bit
@@ -170,7 +169,7 @@ bool CameraHardware::PowerOff()
     return true;
 }
 
-CameraHardware::CameraHardware(const hw_module_t* module) :
+CameraHardware::CameraHardware(const hw_module_t* module, char* devLocation) :
         mWin(0),
         mPreviewWinFmt(PIXEL_FORMAT_UNKNOWN),
         mPreviewWinWidth(0),
@@ -211,6 +210,9 @@ CameraHardware::CameraHardware(const hw_module_t* module) :
         mCurrentRecordingFrame(0),
         mCameraPowerFile(0)
 {
+    //Store the video device location
+    mVideoDevice = devLocation;
+
     /*
      * Initialize camera_device descriptor for this object.
      */
@@ -319,11 +321,11 @@ status_t CameraHardware::closeCamera()
     return NO_ERROR;
 }
 
-status_t CameraHardware::getCameraInfo(struct camera_info* info)
+status_t CameraHardware::getCameraInfo(struct camera_info* info, int facing)
 {
     LOGD("CameraHardware::getCameraInfo");
 
-    info->facing = CAMERA_FACING_FRONT;
+    info->facing = facing;
     info->orientation = 0;
 
     return NO_ERROR;
@@ -476,7 +478,7 @@ status_t CameraHardware::startPreviewLocked()
 
     LOGD("CameraHardware::startPreviewLocked: Open, %dx%d", width, height);
 
-    status_t ret = camera.Open(VIDEO_DEVICE);
+    status_t ret = camera.Open(mVideoDevice);
     if (ret != NO_ERROR) {
         LOGE("Failed to initialize Camera");
         return ret;
@@ -810,7 +812,7 @@ void CameraHardware::initDefaultParameters()
     SortedVector<SurfaceSize> avSizes;
     SortedVector<int> avFps;
 
-    if (camera.Open(VIDEO_DEVICE) != NO_ERROR) {
+    if (camera.Open(mVideoDevice) != NO_ERROR) {
         LOGE("cannot open device.");
     } else {
 
@@ -1644,7 +1646,7 @@ int CameraHardware::pictureThread()
 
         LOGD("CameraHardware::pictureThread: taking picture (%d x %d)", w, h);
 
-        if (camera.Open(VIDEO_DEVICE) == NO_ERROR) {
+        if (camera.Open(mVideoDevice) == NO_ERROR) {
             camera.Init(w, h, 1);
 
             /* Retrieve the real size being used */
