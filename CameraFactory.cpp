@@ -40,7 +40,7 @@ namespace android {
 
 CameraFactory::CameraFactory()
 {
-    LOGD("CameraFactory::CameraFactory");
+    ALOGD("CameraFactory::CameraFactory");
     mCamera = NULL;
     mCameraDevices = NULL;
     mCameraOrientation = NULL;
@@ -49,7 +49,7 @@ CameraFactory::CameraFactory()
 
 CameraFactory::~CameraFactory()
 {
-    LOGD("CameraFactory::~CameraFactory");
+    ALOGD("CameraFactory::~CameraFactory");
     for (int i=0; i < getCameraNum(); i++) {
         delete mCamera[i];
     }
@@ -66,12 +66,12 @@ CameraFactory::~CameraFactory()
 
 int CameraFactory::cameraDeviceOpen(const hw_module_t* module,int camera_id, hw_device_t** device)
 {
-    LOGD("CameraFactory::cameraDeviceOpen: id = %d", camera_id);
+    ALOGD("CameraFactory::cameraDeviceOpen: id = %d", camera_id);
 
     *device = NULL;
 
     if (!mCamera || camera_id < 0 || camera_id >= getCameraNum()) {
-        LOGE("%s: Camera id %d is out of bounds (%d)",
+        ALOGE("%s: Camera id %d is out of bounds (%d)",
              __FUNCTION__, camera_id, getCameraNum());
         return -EINVAL;
     }
@@ -85,16 +85,16 @@ int CameraFactory::cameraDeviceOpen(const hw_module_t* module,int camera_id, hw_
 /* Returns the number of available cameras */
 int CameraFactory::getCameraNum()
 {
-    LOGD("CameraFactory::getCameraNum: %d", mCameraNum);
+    ALOGD("CameraFactory::getCameraNum: %d", mCameraNum);
     return mCameraNum;
 }
 
 int CameraFactory::getCameraInfo(int camera_id, struct camera_info* info)
 {
-    LOGD("CameraFactory::getCameraInfo: id = %d, info = %p", camera_id, info);
+    ALOGD("CameraFactory::getCameraInfo: id = %d, info = %p", camera_id, info);
 
     if (camera_id < 0 || camera_id >= getCameraNum()) {
-        LOGE("%s: Camera id %d is out of bounds (%d)",
+        ALOGE("%s: Camera id %d is out of bounds (%d)",
                 __FUNCTION__, camera_id, getCameraNum());
         return -EINVAL;
     }
@@ -105,7 +105,7 @@ int CameraFactory::getCameraInfo(int camera_id, struct camera_info* info)
 // Parse a simple configuration file
 void CameraFactory::parseConfig(const char* configFile)
 {
-    LOGD("CameraFactory::parseConfig: configFile = %s", configFile);
+    ALOGD("CameraFactory::parseConfig: configFile = %s", configFile);
 
     FILE* config = fopen(configFile, "r");
     if (config != NULL) {
@@ -126,17 +126,17 @@ void CameraFactory::parseConfig(const char* configFile)
             } else if (strcmp(arg1, "back")) {
                 newCameraConfig(CAMERA_FACING_BACK, arg2);
             } else {
-                LOGD("CameraFactory::parseConfig: Unrecognized config line '%s'", line);
+                ALOGD("CameraFactory::parseConfig: Unrecognized config line '%s'", line);
             }
         }
     } else {
-        LOGD("%s not found, using camera configuration defaults", CONFIG_FILE);
+        ALOGD("%s not found, using camera configuration defaults", CONFIG_FILE);
         if (access(DEFAULT_DEVICE_BACK, F_OK) != -1){
-            LOGD("Found device %s", DEFAULT_DEVICE_BACK);
+            ALOGD("Found device %s", DEFAULT_DEVICE_BACK);
             newCameraConfig(CAMERA_FACING_BACK, DEFAULT_DEVICE_BACK);
         }
         if (access(DEFAULT_DEVICE_FRONT, F_OK) != -1){
-            LOGD("Found device %s", DEFAULT_DEVICE_FRONT);
+            ALOGD("Found device %s", DEFAULT_DEVICE_FRONT);
             newCameraConfig(CAMERA_FACING_FRONT, DEFAULT_DEVICE_FRONT);
         }
     }
@@ -157,7 +157,7 @@ void CameraFactory::newCameraConfig(int facing, const char* location)
     mCamera[mCameraNum - 1] = NULL;
     mCameraDevices[mCameraNum - 1] = strdup(location);
     mCameraOrientation[mCameraNum - 1] = facing;
-    LOGD("CameraFactory::newCameraConfig: %d -> %s", mCameraOrientation[mCameraNum - 1], mCameraDevices[mCameraNum - 1]);
+    ALOGD("CameraFactory::newCameraConfig: %d -> %s", mCameraOrientation[mCameraNum - 1], mCameraDevices[mCameraNum - 1]);
 }
 
 /****************************************************************************
@@ -168,7 +168,7 @@ int CameraFactory::device_open(const hw_module_t* module,
                                        const char* name,
                                        hw_device_t** device)
 {
-    LOGD("CameraFactory::device_open: name = %s", name);
+    ALOGD("CameraFactory::device_open: name = %s", name);
 
     /*
      * Simply verify the parameters, and dispatch the call inside the
@@ -176,12 +176,12 @@ int CameraFactory::device_open(const hw_module_t* module,
      */
 
     if (module != &HAL_MODULE_INFO_SYM.common) {
-        LOGE("%s: Invalid module %p expected %p",
+        ALOGE("%s: Invalid module %p expected %p",
                 __FUNCTION__, module, &HAL_MODULE_INFO_SYM.common);
         return -EINVAL;
     }
     if (name == NULL) {
-        LOGE("%s: NULL name is not expected here", __FUNCTION__);
+        ALOGE("%s: NULL name is not expected here", __FUNCTION__);
         return -EINVAL;
     }
 
@@ -191,14 +191,14 @@ int CameraFactory::device_open(const hw_module_t* module,
 
 int CameraFactory::get_number_of_cameras(void)
 {
-    LOGD("CameraFactory::get_number_of_cameras");
+    ALOGD("CameraFactory::get_number_of_cameras");
     return gCameraFactory.getCameraNum();
 }
 
 int CameraFactory::get_camera_info(int camera_id,
                                            struct camera_info* info)
 {
-    LOGD("CameraFactory::get_camera_info");
+    ALOGD("CameraFactory::get_camera_info");
     return gCameraFactory.getCameraInfo(camera_id, info);
 }
 
