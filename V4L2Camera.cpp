@@ -205,7 +205,9 @@ int V4L2Camera::Init(int width, int height, int fps)
             videoIn->format.fmt.pix.pixelformat = pixFmtsOrder[i].fmt;
 
             ret = ioctl(fd, VIDIOC_TRY_FMT, &videoIn->format);
-            if (ret >= 0) {
+            if (ret >= 0 &&
+                videoIn->format.fmt.pix.width ==  (uint)closest.getWidth() &&
+                videoIn->format.fmt.pix.height == (uint)closest.getHeight()) {
                 break;
             }
         }
