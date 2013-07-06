@@ -43,6 +43,7 @@ CameraFactory::CameraFactory()
     ALOGD("CameraFactory::CameraFactory");
     mCamera = NULL;
     mCameraDevices = NULL;
+    mCameraFacing = NULL;
     mCameraOrientation = NULL;
     parseConfig(CONFIG_FILE);
 }
@@ -99,7 +100,8 @@ int CameraFactory::getCameraInfo(int camera_id, struct camera_info* info)
         return -EINVAL;
     }
 
-    return CameraHardware::getCameraInfo(info, mCameraOrientation[camera_id]);
+    return CameraHardware::getCameraInfo(info, mCameraFacing[camera_id],
+                                         mCameraOrientation[camera_id]);
 }
 
 // Parse a simple configuration file
@@ -112,6 +114,7 @@ void CameraFactory::parseConfig(const char* configFile)
         char line[128];
         char arg1[128];
         char arg2[128];
+        int  arg3;
 
         while (fgets(line, sizeof line, config) != NULL) {
             int lineStart = strspn(line, " \t\n\v" );
@@ -119,12 +122,14 @@ void CameraFactory::parseConfig(const char* configFile)
             if (line[lineStart] == '#')
                 continue;
 
-            sscanf(line, "%s %s", arg1, arg2);
+            sscanf(line, "%s %s %d", arg1, arg2, &arg3);
+            if (arg3 != 0 && arg3 != 90 && arg3 != 180 && arg3 != 270)
+                arg3 = 0;
 
             if (strcmp(arg1, "front")) {
-                newCameraConfig(CAMERA_FACING_FRONT, arg2);
+                newCameraConfig(CAMERA_FACING_FRONT, arg2, arg3);
             } else if (strcmp(arg1, "back")) {
-                newCameraConfig(CAMERA_FACING_BACK, arg2);
+                newCameraConfig(CAMERA_FACING_BACK, arg2, arg3);
             } else {
                 ALOGD("CameraFactory::parseConfig: Unrecognized config line '%s'", line);
             }
@@ -133,17 +138,17 @@ void CameraFactory::parseConfig(const char* configFile)
         ALOGD("%s not found, using camera configuration defaults", CONFIG_FILE);
         if (access(DEFAULT_DEVICE_BACK, F_OK) != -1){
             ALOGD("Found device %s", DEFAULT_DEVICE_BACK);
-            newCameraConfig(CAMERA_FACING_BACK, DEFAULT_DEVICE_BACK);
+            newCameraConfig(CAMERA_FACING_BACK, DEFAULT_DEVICE_BACK, 0);
         }
         if (access(DEFAULT_DEVICE_FRONT, F_OK) != -1){
             ALOGD("Found device %s", DEFAULT_DEVICE_FRONT);
-            newCameraConfig(CAMERA_FACING_FRONT, DEFAULT_DEVICE_FRONT);
+            newCameraConfig(CAMERA_FACING_FRONT, DEFAULT_DEVICE_FRONT, 0);
         }
     }
 }
 
 // Although realloc could be a costly operation, we only execute this function usually 2 times
-void CameraFactory::newCameraConfig(int facing, const char* location)
+void CameraFactory::newCameraConfig(int facing, const char* location, int orientation)
 {
     // Keep track of cameras
     mCameraNum++;
@@ -151,13 +156,17 @@ void CameraFactory::newCameraConfig(int facing, const char* location)
     // Grow the information arrays
     mCamera = (CameraHardware**) realloc(mCamera, mCameraNum * sizeof(CameraHardware*));
     mCameraDevices = (char**) realloc(mCameraDevices, mCameraNum * sizeof(char*));
+    mCameraFacing = (int*) realloc(mCameraFacing, mCameraNum * sizeof(int));
     mCameraOrientation = (int*) realloc(mCameraOrientation, mCameraNum * sizeof(int));
 
     // Store the values for each camera_id
     mCamera[mCameraNum - 1] = NULL;
     mCameraDevices[mCameraNum - 1] = strdup(location);
-    mCameraOrientation[mCameraNum - 1] = facing;
-    ALOGD("CameraFactory::newCameraConfig: %d -> %s", mCameraOrientation[mCameraNum - 1], mCameraDevices[mCameraNum - 1]);
+    mCameraFacing[mCameraNum - 1] = facing;
+    mCameraOrientation[mCameraNum - 1] = orientation;
+    ALOGD("CameraFactory::newCameraConfig: %d -> %s (%d)",
+          mCameraFacing[mCameraNum - 1], mCameraDevices[mCameraNum - 1],
+          mCameraOrientation[mCameraNum - 1]);
 }
 
 /****************************************************************************

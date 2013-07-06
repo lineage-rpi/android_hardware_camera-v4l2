@@ -95,13 +95,14 @@ private:
                            hw_device_t** device);
 
     void parseConfig(const char* configFile);
-    void newCameraConfig(int facing, const char* location);
+    void newCameraConfig(int facing, const char* location, int orientation);
 
 private:
 
     /* Camera hardware */
     CameraHardware**    mCamera;
     char**              mCameraDevices;
+    int*                mCameraFacing;
     int*                mCameraOrientation;
     int                 mCameraNum;
 

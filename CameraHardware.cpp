@@ -321,12 +321,13 @@ status_t CameraHardware::closeCamera()
     return NO_ERROR;
 }
 
-status_t CameraHardware::getCameraInfo(struct camera_info* info, int facing)
+status_t CameraHardware::getCameraInfo(struct camera_info* info, int facing,
+                                       int orientation)
 {
     ALOGD("CameraHardware::getCameraInfo");
 
     info->facing = facing;
-    info->orientation = 0;
+    info->orientation = orientation;
 
     return NO_ERROR;
 }
