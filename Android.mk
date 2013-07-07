@@ -26,7 +26,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libui \
 	libutils \
 
-LOCAL_MODULE := camera.default
+LOCAL_MODULE := camera.x86
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 
