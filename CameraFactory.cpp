@@ -126,9 +126,9 @@ void CameraFactory::parseConfig(const char* configFile)
             if (arg3 != 0 && arg3 != 90 && arg3 != 180 && arg3 != 270)
                 arg3 = 0;
 
-            if (strcmp(arg1, "front")) {
+            if (strcmp(arg1, "front") == 0) {
                 newCameraConfig(CAMERA_FACING_FRONT, arg2, arg3);
-            } else if (strcmp(arg1, "back")) {
+            } else if (strcmp(arg1, "back") == 0) {
                 newCameraConfig(CAMERA_FACING_BACK, arg2, arg3);
             } else {
                 ALOGD("CameraFactory::parseConfig: Unrecognized config line '%s'", line);
