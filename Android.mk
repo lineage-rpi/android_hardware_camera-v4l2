@@ -6,6 +6,7 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS := -fno-short-enums -DHAVE_CONFIG_H
 
 LOCAL_C_INCLUDES := \
+	system/media/camera/include \
 	external/jpeg
 
 LOCAL_SRC_FILES := \
