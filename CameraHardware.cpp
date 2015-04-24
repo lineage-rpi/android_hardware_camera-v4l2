@@ -959,6 +959,12 @@ void CameraHardware::initDefaultParameters()
     p.set(CameraParameters::KEY_ZOOM_RATIOS, "100");
     p.set(CameraParameters::KEY_ZOOM_SUPPORTED, "false");
 
+    // missing parameters for Camera2
+    p.set(CameraParameters::KEY_FOCAL_LENGTH, 4.31);
+    p.set(CameraParameters::KEY_HORIZONTAL_VIEW_ANGLE, 90);
+    p.set(CameraParameters::KEY_VERTICAL_VIEW_ANGLE, 90);
+    p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES, "640x480,0x0");
+
     if (setParameters(p.flatten()) != NO_ERROR) {
         ALOGE("CameraHardware::initDefaultParameters: Failed to set default parameters.");
     }
