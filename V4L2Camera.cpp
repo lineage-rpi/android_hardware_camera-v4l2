@@ -61,7 +61,7 @@ int V4L2Camera::Open (const char *device)
     memset(videoIn, 0, sizeof (struct vdIn));
 
     if ((fd = open(device, O_RDWR)) == -1) {
-        ALOGE("ERROR opening V4L interface: %s", strerror(errno));
+        ALOGE("ERROR opening V4L interface %s: %s", device, strerror(errno));
         return -1;
     }
 
@@ -107,7 +107,7 @@ static int my_abs(int x)
 
 int V4L2Camera::Init(int width, int height, int fps)
 {
-    ALOGD("V4L2Camera::Init");
+    ALOGD("V4L2Camera::Init(%d, %d, %d)", width, height, fps);
 
     /* Initialize the capture to the specified width and height */
     static const struct {
