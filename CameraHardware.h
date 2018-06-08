@@ -244,6 +244,8 @@ private:
 
     void fillPreviewWindow(uint8_t* yuyv, int srcWidth, int srcHeight);
 
+    int getPreviewFrameRate(const CameraParameters& params);
+
     mutable Mutex       mLock;
 
     preview_stream_ops* mWin;

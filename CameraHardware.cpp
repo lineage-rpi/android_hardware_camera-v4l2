@@ -475,7 +475,7 @@ status_t CameraHardware::startPreviewLocked()
         mParameters.getPreviewSize(&width, &height);
     }
 
-    int fps = mParameters.getPreviewFrameRate();
+    int fps = getPreviewFrameRate(mParameters);
 
     ALOGD("CameraHardware::startPreviewLocked: Open, %dx%d", width, height);
 
@@ -722,7 +722,7 @@ status_t CameraHardware::setParameters(const char* parms)
     int w, h;
 
     params.getPreviewSize(&w, &h);
-    ALOGD("CameraHardware::setParameters: PREVIEW: Size %dx%d, %d fps, format: %s", w, h, params.getPreviewFrameRate(), params.getPreviewFormat());
+    ALOGD("CameraHardware::setParameters: PREVIEW: Size %dx%d, %d fps, format: %s", w, h, getPreviewFrameRate(params), params.getPreviewFormat());
 
     params.getPictureSize(&w, &h);
     ALOGD("CameraHardware::setParameters: PICTURE: Size %dx%d, format: %s", w, h, params.getPictureFormat());
@@ -866,8 +866,8 @@ void CameraHardware::initDefaultParameters()
     String8 fpsranges("");
     for (i = 0; i < avFps.size(); i++) {
         char descr[32];
-        int ss = avFps[i];
-        sprintf(descr,"(%d,%d)",ss,ss);
+        int ss = avFps[i] * 1000;
+        sprintf(descr, "(%d,%d)", ss, ss);
         fpsranges.append(descr);
         if (i < avFps.size() - 1) {
             fpsranges.append(",");
@@ -1263,7 +1263,7 @@ int CameraHardware::previewThread()
 {
     ALOGV("CameraHardware::previewThread: this=%p",this);
 
-    int previewFrameRate = mParameters.getPreviewFrameRate();
+    int previewFrameRate = getPreviewFrameRate(mParameters);
 
     // Calculate how long to wait between frames.
     int delay = (int)(1000000 / previewFrameRate);
@@ -1781,6 +1781,18 @@ int CameraHardware::pictureThread()
     ALOGD("CameraHardware::pictureThread OK");
 
     return NO_ERROR;
+}
+
+int CameraHardware::getPreviewFrameRate(const CameraParameters& params)
+{
+    int min_fps = -1, max_fps = -1;
+    params.getPreviewFpsRange(&min_fps, &max_fps);
+    if (max_fps == -1) {
+        max_fps = params.getPreviewFrameRate();
+    } else {
+        max_fps /= 1000;
+    }
+    return max_fps;
 }
 
 /****************************************************************************
