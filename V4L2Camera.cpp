@@ -64,6 +64,7 @@ int V4L2Camera::Open (const char *device)
         ALOGE("ERROR opening V4L interface %s: %s", device, strerror(errno));
         return -1;
     }
+    ALOGD("Open %s OK", device);
 
     ret = ioctl (fd, VIDIOC_QUERYCAP, &videoIn->cap);
     if (ret < 0) {

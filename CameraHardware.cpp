@@ -308,7 +308,7 @@ bool CameraHardware::NegotiatePreviewFormat(struct preview_stream_ops* win)
 
 status_t CameraHardware::connectCamera(hw_device_t** device)
 {
-    ALOGD("CameraHardware::connectCamera");
+    ALOGD("CameraHardware::connectCamera: %s", mVideoDevice);
 
     *device = &common;
     return NO_ERROR;
@@ -324,7 +324,7 @@ status_t CameraHardware::closeCamera()
 status_t CameraHardware::getCameraInfo(struct camera_info* info, int facing,
                                        int orientation)
 {
-    ALOGD("CameraHardware::getCameraInfo");
+    ALOGV("CameraHardware::getCameraInfo");
 
     info->facing = facing;
     info->orientation = orientation;
@@ -684,7 +684,7 @@ status_t CameraHardware::cancelPicture()
 
 status_t CameraHardware::setParameters(const char* parms)
 {
-    ALOGD("CameraHardware::setParameters");
+    ALOGV("CameraHardware::setParameters");
 
     CameraParameters params;
     String8 str8_param(parms);
@@ -974,7 +974,7 @@ void CameraHardware::initDefaultParameters()
 
 void CameraHardware::initHeapLocked()
 {
-    ALOGD("CameraHardware::initHeapLocked");
+    ALOGV("CameraHardware::initHeapLocked");
 
     int preview_width, preview_height;
     int picture_width, picture_height;

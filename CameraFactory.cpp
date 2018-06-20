@@ -150,6 +150,12 @@ void CameraFactory::parseConfig(const char* configFile)
 // Although realloc could be a costly operation, we only execute this function usually 2 times
 void CameraFactory::newCameraConfig(int facing, const char* location, int orientation)
 {
+    V4L2Camera camera;
+    if (camera.Open(location) || !camera.getBestPreviewFmt().getFps()) {
+        ALOGW("ignore invalid camera: %s", location);
+        return;
+    }
+
     // Keep track of cameras
     mCameraNum++;
 
