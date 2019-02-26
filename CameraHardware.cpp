@@ -1095,8 +1095,6 @@ void CameraHardware::initHeapLocked()
         int y_size      = stride * preview_height;
         int c_stride    = ((stride >> 1) + 15) & (-16); // Round to 16 pixels
         int c_size      = c_stride * preview_height >> 1;
-        int cr_offset   = y_size;
-        int cb_offset   = y_size + c_size;
         int size        = y_size + (c_size << 1);
 
         how_preview_big = size;
@@ -1165,8 +1163,6 @@ void CameraHardware::initHeapLocked()
         int y_size      = stride * video_height;
         int c_stride    = ((stride >> 1) + 15) & (-16); // Round to 16 pixels
         int c_size      = c_stride * video_height >> 1;
-        int cr_offset   = y_size;
-        int cb_offset   = y_size + c_size;
         int size        = y_size + (c_size << 1);
 
         how_recording_big = size;
@@ -1676,7 +1672,6 @@ int CameraHardware::pictureThread()
             int maxFramesToWait = 8;
             int luminanceStableFor = 0;
             int prevLuminance = 0;
-            int prevDif = -1;
             int stride = w << 1;
             int thresh = (w >> 4) * (h >> 4) * 12; // 5% of full range
 

@@ -779,7 +779,6 @@ bool V4L2Camera::EnumFrameIntervals(int pixfmt, int width, int height)
 bool V4L2Camera::EnumFrameSizes(int pixfmt)
 {
     ALOGD("V4L2Camera::EnumFrameSizes: pixfmt: 0x%08x",pixfmt);
-    int ret=0;
     int fsizeind = 0;
     struct v4l2_frmsizeenum fsize;
 
