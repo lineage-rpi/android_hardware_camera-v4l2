@@ -648,7 +648,7 @@ int CameraHardware::isRecordingEnabled()
 
 void CameraHardware::releaseRecordingFrame(const void* mem)
 {
-    ALOGD("CameraHardware::releaseRecordingFrame");
+    ALOGD("CameraHardware::releaseRecordingFrame: %p", mem);
 }
 
 
@@ -778,7 +778,7 @@ void CameraHardware::putParameters(char* params)
 
 status_t CameraHardware::sendCommand(int32_t command, int32_t arg1, int32_t arg2)
 {
-    ALOGD("CameraHardware::sendCommand");
+    ALOGD("CameraHardware::sendCommand: %d (%d, %d)", command, arg1, arg2);
     return 0;
 }
 
@@ -792,7 +792,7 @@ void CameraHardware::releaseCamera()
 
 status_t CameraHardware::dumpCamera(int fd)
 {
-    ALOGD("dump");
+    ALOGV("%s: %d", __FUNCTION__, fd);
     return -EINVAL;
 }
 
