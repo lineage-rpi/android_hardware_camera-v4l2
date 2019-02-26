@@ -2,7 +2,7 @@
 	libcamera: An implementation of the library required by Android OS 3.2 so
 	it can access V4L2 devices as cameras.
 
-    (C) 2011 Eduardo José Tagle <ejtagle@tutopia.com>
+    (C) 2011 Eduardo JosÃ© Tagle <ejtagle@tutopia.com>
 
 	Based on several packages:
 		- luvcview: Sdl video Usb Video Class grabber
