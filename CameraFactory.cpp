@@ -223,7 +223,7 @@ int CameraFactory::get_camera_info(int camera_id,
 
 /* Entry point for camera HAL API. */
 struct hw_module_methods_t CameraFactory::mCameraModuleMethods = {
-    open: CameraFactory::device_open
+    .open = CameraFactory::device_open
 };
 
 }; /* namespace android */

@@ -29,17 +29,17 @@
  * Required HAL header.
  */
 camera_module_t HAL_MODULE_INFO_SYM = {
-    common: {
-         tag:           HARDWARE_MODULE_TAG,
-         version_major: 1,
-         version_minor: 0,
-         id:            CAMERA_HARDWARE_MODULE_ID,
-         name:          "Camera Module",
-         author:        "The Android Open Source Project",
-         methods:       &android::CameraFactory::mCameraModuleMethods,
-         dso:           NULL,
-         reserved:      {0},
+    .common = {
+        .tag           = HARDWARE_MODULE_TAG,
+        .version_major = 1,
+        .version_minor = 0,
+        .id            = CAMERA_HARDWARE_MODULE_ID,
+        .name          = "Camera Module",
+        .author        = "The Android Open Source Project",
+        .methods       = &android::CameraFactory::mCameraModuleMethods,
+        .dso           = NULL,
+        .reserved      = {0},
     },
-    get_number_of_cameras:  android::CameraFactory::get_number_of_cameras,
-    get_camera_info:        android::CameraFactory::get_camera_info,
+    .get_number_of_cameras = android::CameraFactory::get_number_of_cameras,
+    .get_camera_info       = android::CameraFactory::get_camera_info,
 };
