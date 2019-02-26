@@ -960,9 +960,9 @@ void CameraHardware::initDefaultParameters()
     p.set(CameraParameters::KEY_ZOOM_SUPPORTED, "false");
 
     // missing parameters for Camera2
-    p.set(CameraParameters::KEY_FOCAL_LENGTH, 4.31);
-    p.set(CameraParameters::KEY_HORIZONTAL_VIEW_ANGLE, 90);
-    p.set(CameraParameters::KEY_VERTICAL_VIEW_ANGLE, 90);
+    p.setFloat(CameraParameters::KEY_FOCAL_LENGTH, 4.31);
+    p.setFloat(CameraParameters::KEY_HORIZONTAL_VIEW_ANGLE, 90);
+    p.setFloat(CameraParameters::KEY_VERTICAL_VIEW_ANGLE, 90);
     p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES, "640x480,0x0");
     p.set(CameraParameters::KEY_EXPOSURE_COMPENSATION, "6");
     p.set(CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.5");
