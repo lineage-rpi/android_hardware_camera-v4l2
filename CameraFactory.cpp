@@ -20,8 +20,6 @@
  */
 
 #define LOG_NDEBUG 0
-#define DEFAULT_DEVICE_FRONT "/dev/video1"
-#define DEFAULT_DEVICE_BACK  "/dev/video0"
 #define CONFIG_FILE "/etc/camera.cfg"
 #define LOG_TAG "Camera_Factory"
 
@@ -140,13 +138,24 @@ void CameraFactory::parseConfig(const char* configFile)
         }
     } else {
         ALOGD("%s not found, using camera configuration defaults", CONFIG_FILE);
-        if (access(DEFAULT_DEVICE_BACK, F_OK) != -1){
-            ALOGD("Found device %s", DEFAULT_DEVICE_BACK);
-            newCameraConfig(CAMERA_FACING_BACK, DEFAULT_DEVICE_BACK, 0);
+        char camera_node[] = "/dev/video0";
+        char camera_prop[] = "hal.camera.0";
+        char prop[PROPERTY_VALUE_MAX] = "";
+        while (camera_node[10] <= '9' && mCameraNum < 3) {
+            if (!access(camera_node, F_OK)) {
+                int facing = mCameraNum, orientation = 0;
+                if (property_get(camera_prop, prop, "")) {
+                    sscanf(prop, "%d,%d", &facing, &orientation);
+                    ALOGI("%s got facing=%d orient=%d from property %s", __FUNCTION__, facing, orientation, camera_prop);
+                }
+                newCameraConfig(facing, camera_node, orientation);
+            }
+            camera_node[10]++, camera_prop[11]++;
         }
-        if (access(DEFAULT_DEVICE_FRONT, F_OK) != -1){
-            ALOGD("Found device %s", DEFAULT_DEVICE_FRONT);
-            newCameraConfig(CAMERA_FACING_FRONT, DEFAULT_DEVICE_FRONT, 0);
+
+        // If there is only one camera, assume its facing is front
+        if (mCameraNum == 1 && prop[0] == '\0') {
+            mCameraFacing[0] = CAMERA_FACING_FRONT;
         }
     }
 }
