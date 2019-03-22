@@ -53,8 +53,12 @@ CameraFactory::~CameraFactory()
     ALOGD("CameraFactory::~CameraFactory");
     for (int i=0; i < getCameraNum(); i++) {
         delete mCamera[i];
+        free(mCameraDevices[i]);
     }
     free(mCamera);
+    free(mCameraDevices);
+    free(mCameraFacing);
+    free(mCameraOrientation);
 }
 
 /****************************************************************************
