@@ -141,10 +141,12 @@ void CameraFactory::parseConfig(const char* configFile)
         char camera_node[] = "/dev/video0";
         char camera_prop[] = "hal.camera.0";
         char prop[PROPERTY_VALUE_MAX] = "";
+        bool no_prop = true;
         while (camera_node[10] <= '9' && mCameraNum < 3) {
             if (!access(camera_node, F_OK)) {
                 int facing = mCameraNum, orientation = 0;
                 if (property_get(camera_prop, prop, "")) {
+                    no_prop = false;
                     sscanf(prop, "%d,%d", &facing, &orientation);
                     ALOGI("%s got facing=%d orient=%d from property %s", __FUNCTION__, facing, orientation, camera_prop);
                 }
@@ -154,8 +156,9 @@ void CameraFactory::parseConfig(const char* configFile)
         }
 
         // If there is only one camera, assume its facing is front
-        if (mCameraNum == 1 && prop[0] == '\0') {
+        if (mCameraNum == 1 && no_prop) {
             mCameraFacing[0] = CAMERA_FACING_FRONT;
+            ALOGI("%s assume %s is front", __FUNCTION__, mCameraDevices[0]);
         }
     }
 }
