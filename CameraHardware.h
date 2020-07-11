@@ -174,6 +174,9 @@ private:
     bool PowerOn();
     bool PowerOff();
     bool NegotiatePreviewFormat(struct preview_stream_ops* win);
+    void ReleaseAllHeap();
+    void ResetRuntimeData();
+
 
 public:
     /* Constructs Camera instance.

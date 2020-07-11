@@ -169,6 +169,26 @@ bool CameraHardware::PowerOff()
     return true;
 }
 
+void CameraHardware::ResetRuntimeData(){
+    mWin = 0;
+    mPreviewWinFmt = PIXEL_FORMAT_UNKNOWN;
+    mPreviewWinWidth = 0;
+    mPreviewWinHeight = 0;
+    mRawPreviewFrameSize = 0;
+    mRawPreviewWidth = 0;
+    mRawPreviewHeight = 0;
+    mPreviewFrameSize = 0;
+    mPreviewFmt = PIXEL_FORMAT_UNKNOWN;
+    mRawPictureBufferSize = 0;
+    mRecordingFrameSize = 0;
+    mRecFmt = PIXEL_FORMAT_UNKNOWN;
+    mJpegPictureBufferSize = 0;
+    mRecordingEnabled = 0;
+    mMsgEnabled = 0;
+    mCurrentPreviewFrame = 0;
+    mCurrentRecordingFrame = 0;
+}
+
 CameraHardware::CameraHardware(const hw_module_t* module, char* devLocation) :
         mWin(0),
         mPreviewWinFmt(PIXEL_FORMAT_UNKNOWN),
@@ -234,13 +254,8 @@ CameraHardware::CameraHardware(const hw_module_t* module, char* devLocation) :
     initDefaultParameters();
 }
 
-CameraHardware::~CameraHardware()
+void CameraHardware::ReleaseAllHeap()
 {
-    ALOGD("CameraHardware::destruct");
-    if (mPreviewThread != 0) {
-        stopPreview();
-    }
-
     // Release all memory heaps
     if (mRawPreviewHeap) {
         mRawPreviewHeap->release(mRawPreviewHeap);
@@ -266,6 +281,16 @@ CameraHardware::~CameraHardware()
         mJpegPictureHeap->release(mJpegPictureHeap);
         mJpegPictureHeap = NULL;
     }
+}
+
+CameraHardware::~CameraHardware()
+{
+    ALOGD("CameraHardware::destruct");
+    if (mPreviewThread != 0) {
+        stopPreview();
+    }
+
+    ReleaseAllHeap();
 
     // Power off camera
     PowerOff();
@@ -788,6 +813,8 @@ void CameraHardware::releaseCamera()
     if (mPreviewThread != 0) {
         stopPreview();
     }
+    ReleaseAllHeap();
+    ResetRuntimeData();
 }
 
 status_t CameraHardware::dumpCamera(int fd)
