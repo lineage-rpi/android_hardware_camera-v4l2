@@ -18,11 +18,14 @@
 #ifndef ANDROID_HARDWARE_CAMERA_HARDWARE_H
 #define ANDROID_HARDWARE_CAMERA_HARDWARE_H
 
-#include <camera/CameraParameters.h>
+#include <CameraParameters.h>
 #include <hardware/camera.h>
 #include <utils/threads.h>
 #include <utils/threads.h>
 #include "V4L2Camera.h"
+
+using ::android::hardware::camera::common::V1_0::helper::CameraParameters;
+using ::android::hardware::camera::common::V1_0::helper::Size;
 
 namespace android {
 
