@@ -156,10 +156,12 @@ void CameraFactory::parseConfig(const char* configFile)
         }
 
         // If there is only one camera, assume its facing is front
+        /*
         if (mCameraNum == 1 && no_prop) {
             mCameraFacing[0] = CAMERA_FACING_FRONT;
             ALOGI("%s assume %s is front", __FUNCTION__, mCameraDevices[0]);
         }
+        */
     }
 }
 
